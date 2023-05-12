@@ -20,12 +20,6 @@
     <dependencies>
         <dependency>
             <groupId>com.digdes.java2023</groupId>
-            <artifactId>dto</artifactId>
-            <version>${revision}${changelist}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.digdes.java2023</groupId>
             <artifactId>controller</artifactId>
             <version>${revision}${changelist}</version>
         </dependency>
