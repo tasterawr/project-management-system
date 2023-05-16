@@ -1,9 +1,8 @@
 package com.digdes.java2023.repo.impl;
 
-import com.digdes.java2023.enums.EmployeeStatus;
 import com.digdes.java2023.model.Employee;
 import com.digdes.java2023.repo.EmployeeRepo;
-import com.digdes.java2023.exception.DataAccessLayerException;
+import com.digdes.java2023.exception.DALException;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -13,16 +12,15 @@ import java.util.List;
 import java.util.UUID;
 
 public class EmployeeRepoDummy implements EmployeeRepo {
-    private List<Employee> employeeCache;
-    private final String STORAGE_PATH;
+    private List<Employee> employeeCash;
+    private String STORAGE_PATH = "employees.txt";
 
-    public EmployeeRepoDummy(List<Employee> employeeCache, String storage_path) {
-        this.employeeCache = employeeCache;
-        this.STORAGE_PATH = storage_path;
+    {
+        employeeCash = new ArrayList<>();
     }
 
     @Override
-    public Employee create(Employee employee) throws DataAccessLayerException {
+    public void create(Employee employee) throws DALException {
         if (!Files.exists(Path.of(STORAGE_PATH))){
             try {
                 Files.createFile(Path.of(STORAGE_PATH));
@@ -32,109 +30,88 @@ public class EmployeeRepoDummy implements EmployeeRepo {
         }
 
         try(ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(STORAGE_PATH))){
-            employee.setId(UUID.randomUUID());
-            employeeCache.add(employee);
-            os.writeObject(employeeCache);
-            return employee;
+            employeeCash.add(employee);
+            os.writeObject(employeeCash);
         } catch (FileNotFoundException e) {
-            throw new DataAccessLayerException(e.getMessage());
+            throw new DALException(e.getMessage());
         } catch (IOException e){
-            throw new DataAccessLayerException("Error creating employee: ", e);
+            throw new DALException("Error creating employee: ", e);
         }
     }
 
     @Override
-    public Employee update(Employee employee) throws DataAccessLayerException {
-        Employee old = getByIdFromCash(employee.getId());
-        if (old == null){
-            return create(employee);
-        } else {
-            employeeCache.remove(old);
-            employeeCache.add(employee);
-            try(ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(STORAGE_PATH))){
-                os.writeObject(employeeCache);
-                return employee;
-            } catch (FileNotFoundException e) {
-                throw new DataAccessLayerException(e.getMessage());
-            } catch (IOException e){
-                throw new DataAccessLayerException("Error updating employee: ", e);
-            }
-        }
-    }
-
-    @Override
-    public Employee getById(UUID id) throws DataAccessLayerException {
+    public Employee getById(UUID id) throws DALException {
         Employee employee = getByIdFromCash(id);
 
         if (employee == null){
             if (Files.exists(Path.of(STORAGE_PATH))){
                 try(ObjectInputStream is = new ObjectInputStream(new FileInputStream(STORAGE_PATH))){
-                    employeeCache = (List<Employee>) is.readObject();
+                    employeeCash = (List<Employee>) is.readObject();
                     employee = getByIdFromCash(id);
                     if (employee == null){
-                        throw new DataAccessLayerException("No employee with id: " + id.toString());
+                        throw new DALException("No employee with id: " + id.toString());
                     }
                 } catch (FileNotFoundException e) {
-                    throw new DataAccessLayerException(e.getMessage());
+                    throw new DALException(e.getMessage());
                 } catch (IOException e){
-                    throw new DataAccessLayerException("Error getting employee: ", e);
+                    throw new DALException("Error getting employee: ", e);
                 } catch (ClassNotFoundException e) {
                     throw new RuntimeException(e);
                 }
             } else {
-                throw new DataAccessLayerException("No employee with id: " + id.toString());
+                throw new DALException("No employee with id: " + id.toString());
             }
         }
         return employee;
     }
 
     private Employee getByIdFromCash(UUID id){
-        return employeeCache.stream().
+        return employeeCash.stream().
                 filter(e -> e.getId().equals(id)).
                 findFirst().orElse(null);
     }
 
     @Override
-    public List<Employee> getAll() throws DataAccessLayerException {
+    public List<Employee> getAll() throws DALException {
         if (Files.exists(Path.of(STORAGE_PATH))){
             try(ObjectInputStream is = new ObjectInputStream(new FileInputStream(STORAGE_PATH))){
-                employeeCache = (List<Employee>) is.readObject();
+                employeeCash = (List<Employee>) is.readObject();
             } catch (FileNotFoundException e) {
-                throw new DataAccessLayerException(e.getMessage());
+                throw new DALException(e.getMessage());
             } catch (IOException e){
-                throw new DataAccessLayerException("Error getting employees: ", e);
+                throw new DALException("Error getting employees: ", e);
             } catch (ClassNotFoundException e) {
                 throw new RuntimeException(e);
             }
         }
 
-        return new ArrayList<>(employeeCache);
+        return new ArrayList<>(employeeCash);
     }
 
     @Override
-    public void deleteById(UUID id) throws DataAccessLayerException {
+    public void deleteById(UUID id) throws DALException {
         if (!Files.exists(Path.of(STORAGE_PATH))){
-            throw new DataAccessLayerException("No employee with id: " + id.toString());
+            throw new DALException("No employee with id: " + id.toString());
         }
 
         try(ObjectInputStream is = new ObjectInputStream(new FileInputStream(STORAGE_PATH));
             ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(STORAGE_PATH))){
             Employee employee = getByIdFromCash(id);
             if (employee == null){
-                employeeCache = (List<Employee>) is.readObject();
+                employeeCash = (List<Employee>) is.readObject();
             }
 
             employee = getByIdFromCash(id);
             if (employee == null){
-                throw new DataAccessLayerException("No employee with id: " + id.toString());
+                throw new DALException("No employee with id: " + id.toString());
             } else {
-                employee.setStatus(EmployeeStatus.DELETED);
-                os.writeObject(employeeCache);
+                employeeCash.remove(employee);
+                os.writeObject(employeeCash);
             }
         } catch (FileNotFoundException e) {
-            throw new DataAccessLayerException(e.getMessage());
+            throw new DALException(e.getMessage());
         } catch (IOException e){
-            throw new DataAccessLayerException("Error deleting employee: ", e);
+            throw new DALException("Error deleting employee: ", e);
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }

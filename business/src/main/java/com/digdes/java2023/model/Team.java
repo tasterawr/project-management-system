@@ -1,6 +1,5 @@
 package com.digdes.java2023.model;
 
-import com.digdes.java2023.enums.TeamRole;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
