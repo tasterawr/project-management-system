@@ -1,4 +1,4 @@
-package com.digdes.java2023;
+package com.digdes.java2023.app;
 
 import com.digdes.java2023.dto.EmployeeDto;
 import com.digdes.java2023.enums.EmployeeStatus;
