@@ -1,4 +1,4 @@
-package com.digdes.java2023.model;
+package com.digdes.java2023.enums;
 
 import java.io.Serializable;
 
