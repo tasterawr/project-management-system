@@ -1,9 +1,9 @@
 package com.digdes.java2023.model;
 
+import com.digdes.java2023.enums.EmployeeStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 import java.io.Serializable;
 import java.util.UUID;
@@ -11,7 +11,6 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 public class Employee implements Serializable {
     private UUID id;
     private String lastName;
