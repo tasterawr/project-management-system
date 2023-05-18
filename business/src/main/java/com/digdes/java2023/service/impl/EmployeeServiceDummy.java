@@ -56,9 +56,9 @@ public class EmployeeServiceDummy implements EmployeeService {
     }
 
     @Override
-    public void deleteById(UUID id) throws BusinessLogicException {
+    public EmployeeDto deleteById(UUID id) throws BusinessLogicException {
         try {
-            employeeRepo.deleteById(id);
+            return employeeToDto(employeeRepo.deleteById(id));
         }catch (DataAccessLayerException e){
             throw new BusinessLogicException(e.getMessage(), e);
         }

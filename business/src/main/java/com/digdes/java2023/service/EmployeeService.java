@@ -11,5 +11,5 @@ public interface EmployeeService extends ServiceDtoMapper{
     EmployeeDto update(EmployeeDto employeeDto) throws BusinessLogicException;
     EmployeeDto getById(UUID id) throws BusinessLogicException;
     List<EmployeeDto> getAll() throws BusinessLogicException;
-    void deleteById(UUID id) throws BusinessLogicException;
+    EmployeeDto deleteById(UUID id) throws BusinessLogicException;
 }

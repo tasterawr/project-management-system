@@ -9,7 +9,6 @@ import com.digdes.java2023.service.impl.EmployeeServiceDummy;
 
 import java.util.ArrayList;
 
-
 public class Main {
     public static void main(String[] args) {
         EmployeeDto employeeDto1 = new EmployeeDto();
@@ -51,8 +50,10 @@ public class Main {
             System.out.println(employeeDto1);
 
             System.out.println("\nУдаление:");
-            employeeService.deleteById(employeeDto2.getId());
+            EmployeeDto deletedEmployee = employeeService.deleteById(employeeDto2.getId());
+            System.out.println(deletedEmployee);
 
+            System.out.println("\nПолучение всех сотрудников:");
             for (EmployeeDto e : employeeService.getAll()){
                 System.out.println(e);
             }

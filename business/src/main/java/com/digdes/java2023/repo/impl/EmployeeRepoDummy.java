@@ -112,7 +112,7 @@ public class EmployeeRepoDummy implements EmployeeRepo {
     }
 
     @Override
-    public void deleteById(UUID id) throws DataAccessLayerException {
+    public Employee deleteById(UUID id) throws DataAccessLayerException {
         if (!Files.exists(Path.of(STORAGE_PATH))){
             throw new DataAccessLayerException("No employee with id: " + id.toString());
         }
@@ -130,6 +130,7 @@ public class EmployeeRepoDummy implements EmployeeRepo {
             } else {
                 employee.setStatus(EmployeeStatus.DELETED);
                 os.writeObject(employeeCache);
+                return employee;
             }
         } catch (FileNotFoundException e) {
             throw new DataAccessLayerException(e.getMessage());

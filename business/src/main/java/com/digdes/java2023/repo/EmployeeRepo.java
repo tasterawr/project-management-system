@@ -11,5 +11,5 @@ public interface EmployeeRepo {
     Employee update(Employee employee) throws DataAccessLayerException;
     Employee getById(UUID id) throws DataAccessLayerException;
     List<Employee> getAll() throws DataAccessLayerException;
-    void deleteById(UUID id) throws DataAccessLayerException;
+    Employee deleteById(UUID id) throws DataAccessLayerException;
 }
