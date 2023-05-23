@@ -31,8 +31,14 @@ public class EmployeeRepoDummy implements EmployeeRepo {
             }
         }
 
-        try(ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(STORAGE_PATH))){
+        if (employee.getId() != null){
+            if (getByIdFromCash(employee.getId()) != null)
+                throw new DataAccessLayerException(String.format("Error creating employee: employee with id %s already exists.", employee.getId()));
+        } else {
             employee.setId(UUID.randomUUID());
+        }
+
+        try(ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(STORAGE_PATH))){
             employeeCache.add(employee);
             os.writeObject(employeeCache);
             return employee;

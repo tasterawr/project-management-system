@@ -8,6 +8,7 @@ import com.digdes.java2023.service.EmployeeService;
 import com.digdes.java2023.service.impl.EmployeeServiceDummy;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class Main {
     public static void main(String[] args) {
@@ -31,7 +32,9 @@ public class Main {
 
         try{
             System.out.println("Создание:");
-            employeeDto1 = employeeService.create(employeeDto1);
+            employeeDto1.setId(UUID.fromString("6056c5ae-c9ed-4fd1-bdcb-a1556241d737"));
+            employeeService.update(employeeDto1);
+//            employeeDto1 = employeeService.create(employeeDto1);
             employeeDto2 = employeeService.create(employeeDto2);
             System.out.println(employeeDto1);
             System.out.println(employeeDto2);
